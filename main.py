@@ -10,7 +10,7 @@ class main:
     def __init__(self, sheet_id, sheet_name):
         self.sheet_id = sheet_id
         self.sheet_name = sheet_name
-        self.credentials_path = "./credentials.json"
+        self.credentials_path = "./data/credentials.json"
         self.scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
         self.creds = ServiceAccountCredentials.from_json_keyfile_name(self.credentials_path, self.scope)
         self.client = gspread.authorize(self.creds)
