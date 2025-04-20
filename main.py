@@ -10,6 +10,7 @@ class main:
     def __init__(self, sheet_id, sheet_name):
         self.sheet_id = sheet_id
         self.sheet_name = sheet_name
+        self.worksheet_name = "sheet1"  # Add this line to make it configurable
         self.credentials_path = "./data/credentials.json"
         self.scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
         self.creds = ServiceAccountCredentials.from_json_keyfile_name(self.credentials_path, self.scope)
@@ -17,7 +18,7 @@ class main:
     def get_sheet_data(self):
         try:
             sheet = self.client.open(self.sheet_name)
-            worksheet = sheet.worksheet("sheet1")
+            worksheet = sheet.worksheet(self.worksheet_name)  # Use the configurable worksheet name
             data = worksheet.get_all_records()
             self.df = pd.DataFrame(data)
             self.df.columns = self.df.columns.str.strip()
@@ -54,8 +55,8 @@ class main:
             logging.error(f"Error sending email: {e}")
             exit()
 
-sheet_id = "1euZhdelNxgdj85-smtnDc2TxvkEWkEHAoPtAYFPWuG0"
-sheet_name = "test(Responses)"
-sheet = main(sheet_id, sheet_name)
-sheet.send_mail()
+# sheet_id = "1euZhdelNxgdj85-smtnDc2TxvkEWkEHAoPtAYFPWuG0"
+# sheet_name = "test(Responses)"
+# sheet = main(sheet_id, sheet_name)
+# sheet.send_mail()
 # print(emails,names)

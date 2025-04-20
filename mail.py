@@ -12,7 +12,7 @@ def mail(RECIPIENT):
     SENDER = 'sharmatanish097654@gmail.com'
     PASSWORD = 'aojj tmmw bplp nden '
     # RECIPIENT = 'sharmatanish0907@gmail.com'
-    MESSAGE_FILE = 'compose.md'
+    MESSAGE_FILE = 'compose.html'
     DISPLAY_NAME = 'Tanish'
     with open(MESSAGE_FILE) as file:
         message = file.read()
@@ -25,7 +25,7 @@ def mail(RECIPIENT):
 
     multipart_msg = MIMEMultipart("alternative")
 
-    multipart_msg["Subject"] = message.splitlines()[0]
+    multipart_msg["Subject"] = "Python Developer Inquiry"
     multipart_msg["From"] = DISPLAY_NAME + f' <{SENDER}>'
     multipart_msg["To"] = RECIPIENT
 

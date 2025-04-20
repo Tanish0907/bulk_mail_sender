@@ -71,7 +71,7 @@ def mail(email):
 Run the script:
 
 ```bash
-python main_script.py
+python gui.py
 ```
 
 ---
