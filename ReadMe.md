@@ -1,7 +1,3 @@
-Thanks! Based on your script, here's a clean and professional `README.md` you can use:
-
----
-
 # 📧 Google Sheets Email Automation
 
 This Python script automates the process of sending emails based on data from a Google Sheet. It reads user data from the sheet, checks if an email should be sent based on a "Yes" value, and sends an email using a custom `mail()` function.
