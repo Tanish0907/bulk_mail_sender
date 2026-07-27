@@ -1,15 +1,18 @@
-# 📧 Google Sheets Email Automation
+# 📧 Resend Bulk Mail Sender
 
-This Python script automates the process of sending emails based on data from a Google Sheet. It reads user data from the sheet, checks if an email should be sent based on a "Yes" value, and sends an email using a custom `mail()` function.
+A powerful Python application and desktop GUI for bulk emailing using the **Resend API**. Supports sending to **direct arrays/lists of email addresses** as well as automatically fetching recipients from **Google Sheets**.
 
 ---
 
-## 🔧 Features
+## 🔧 Key Features
 
-- Connects to a Google Sheet using service account credentials
-- Retrieves data with `pandas`
-- Logs all operations (success and errors)
-- Sends emails conditionally based on data from the sheet
+- **Resend API Integration**: Lightning-fast, reliable bulk transactional email delivery.
+- **Dual Input Modes**:
+  1. **Python Array / List**: Pass any python list or text array of email addresses.
+  2. **Google Sheets Integration**: Read recipient lists directly from Google Sheets using `gspread`.
+- **Rich Content Support**: Load HTML templates (`.html`) or Markdown templates (`.md`) seamlessly.
+- **Rate Limiting & Logging**: Automatic deduplication, clean console/UI logs, rate limit delays, and structured summary reporting.
+- **Desktop GUI App**: Full-featured Tkinter desktop application with live logs and interactive recipient previews.
 
 ---
 
@@ -17,83 +20,124 @@ This Python script automates the process of sending emails based on data from a 
 
 ```
 .
+├── main.py                # Core BulkMailer engine class
+├── gui.py                 # Tkinter Desktop GUI application
+├── example_array.py       # Example: Send to direct email array
+├── example_sheets.py      # Example: Send from Google Sheets
+├── compose.html           # HTML Email Template
+├── compose.md             # Markdown Email Template
+├── .env                   # Environment secrets (Resend API Key, Sender, Sheet ID)
 ├── data/
-│   └── credentials.json       # Google service account credentials
-├── mail.py                    # Custom mail function (must define `mail(email)`)
-├── main_script.py             # Your main script (shown above)
-└── README.md
+│   └── credentials.json   # Google service account credentials
+└── ReadMe.md
 ```
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Environment Setup
 
-### 1. Clone the repository
+### 1. Configure `.env`
+Create or update your `.env` file with your Resend API credentials and defaults:
 
-```bash
-git clone https://github.com/yourusername/sheets-email-automation.git
-cd sheets-email-automation
+```env
+RESEND_API_KEY=re_your_resend_api_key_here
+FROM_EMAIL=onboarding@resend.dev
+SHEET_ID=your_google_sheet_id_here
+WORKSHEET_NAME=Sheet1
 ```
 
-### 2. Install dependencies
-
-```bash
-pip install gspread oauth2client pandas
-```
-
-### 3. Set up Google Sheets API
-
-- Create a service account in Google Cloud
-- Share the Google Sheet with the service account email
-- Download and save the credentials JSON file as `./data/credentials.json`
-
-### 4. Prepare your Google Sheet
-
-- Your sheet should have at least these columns: `Name`, `Email`, `test`
-- The `test` column should contain `"Yes"` or `"No"` for whether to send an email
+> [!NOTE]
+> If using `onboarding@resend.dev` as `FROM_EMAIL` (Resend's default test sender), emails can only be delivered to your registered Resend account email address until you verify a custom domain.
 
 ---
 
-## 📨 Sending Emails
+## 📨 Usage Examples
 
-Make sure your `mail.py` has a function like:
+### Option 1: Send to an Array / List of Email Addresses
+
+You can pass a Python list or array of emails directly to `send_from_list()`:
 
 ```python
-def mail(email):
-    # your email-sending logic
-    pass
+from main import BulkMailer
+
+mailer = BulkMailer()
+
+# Array of email recipients
+recipients = [
+    "alice@example.com",
+    "bob@example.com",
+    "charlie@example.com"
+]
+
+# Load HTML or Markdown email template
+html_content = mailer.load_content_from_file("compose.html")
+
+# Send bulk emails
+results = mailer.send_from_list(
+    emails=recipients,
+    subject="Welcome to Our Product!",
+    html=html_content,
+    delay_seconds=0.5
+)
+
+print(f"Sent {results['success']} out of {results['total']} emails.")
 ```
 
-Run the script:
+Run the example script:
+```bash
+python example_array.py
+```
+
+---
+
+### Option 2: Send from Google Sheets
+
+Ensure `./data/credentials.json` contains your Google Service Account credentials and the sheet is shared with your service account email.
+
+```python
+from main import BulkMailer
+
+mailer = BulkMailer()
+
+html_content = mailer.load_content_from_file("compose.html")
+
+results = mailer.send_from_sheet(
+    subject="Monthly Newsletter",
+    html=html_content,
+    column_name="Email",  # Header of email column in sheet
+    delay_seconds=0.5
+)
+
+print(f"Sent {results['success']} emails from Google Sheets.")
+```
+
+Run the example script:
+```bash
+python example_sheets.py
+```
+
+---
+
+## 🖥️ Desktop GUI App
+
+Launch the graphical interface:
 
 ```bash
 python gui.py
 ```
 
----
-
-## 🧠 How It Works
-
-1. Authenticates with Google Sheets API using the service account
-2. Fetches all data from `sheet1`
-3. Filters and zips `Name`, `Email`, and `test` fields
-4. Sends an email only if `test == "Yes"`
+### Features in GUI:
+- Switch between **Array / Manual List** tab and **Google Sheets** tab.
+- Preview recipient counts before sending.
+- Browse and load `.html` or `.md` files as email templates.
+- View real-time output logs and progress status.
 
 ---
 
-## 📋 Logging
+## 📋 Requirements
 
-Logs are printed to the console with timestamps and severity levels. You’ll see messages like:
+Install required dependencies via `pip`:
 
-- `INFO - Data retrieved successfully.`
-- `ERROR - Error sending email: ...`
-
----
-
-## 📬 Example Output
-
-```
-[('user1@example.com', 'Alice', 'Yes'), ('user2@example.com', 'Bob', 'No')]
-Email sent to Alice at user1@example.com
-Email not sent to Bob at user2@example.com
+```bash
+pip install resend gspread pandas python-dotenv markdown
 ```

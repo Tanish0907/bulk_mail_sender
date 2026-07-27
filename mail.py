@@ -10,7 +10,7 @@ def mail(RECIPIENT):
     HOST = 'smtp.gmail.com'
     PORT = 587
     SENDER = 'sharmatanish097654@gmail.com'
-    PASSWORD = 'aojj tmmw bplp nden '
+    PASSWORD = 'jhim sjfc rahm btxb'
     # RECIPIENT = 'sharmatanish0907@gmail.com'
     MESSAGE_FILE = 'compose.html'
     DISPLAY_NAME = 'Tanish'
@@ -43,3 +43,4 @@ def mail(RECIPIENT):
 
     print('Sent email successfully!')
 
+mail('sharmatanish0907@gmail.com')
